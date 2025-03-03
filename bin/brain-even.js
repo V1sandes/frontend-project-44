@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 import readlineSync from 'readline-sync';
-import game from '../src/cli.js';
+
+const game = () => {
+  const name = readlineSync.question('Welcome to the Even Game! What is your name? ');
+  console.log(`Hello, ${name}!`);
+  return name;
+};
 
 const isEvenGame = () => {
   const name = game();
@@ -22,14 +27,15 @@ const isEvenGame = () => {
       console.log('Correct!');
     } else {
       console.log(
-        `${userAnswer} is wrong answer ;(. Correct answer is ${correctAnswer}.`,
+        `${userAnswer} is a wrong answer ;(. The correct answer is ${correctAnswer}.`,
       );
       console.log(`Let's try again, ${name}!`);
-      return;
+      return name;
     }
   }
 
   console.log(`Congratulations, ${name}! Your score is: ${score}`);
+  return name;
 };
 
 isEvenGame();
