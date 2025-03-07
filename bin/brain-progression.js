@@ -1,46 +1,60 @@
 #!/usr/bin/env node
 import readlineSync from 'readline-sync';
-import { randomInt } from 'crypto';
+import game from '../src/cli.js';
 
-const generateProgression = (length, start, step, hiddenIndex) => {
+function getRandomIntInclusive(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
+}
+
+const generateProgression = () => {
+  const length = getRandomIntInclusive(5, 10);
+  const start = getRandomIntInclusive(0, 9);
+  const step = getRandomIntInclusive(1, 5);
   const progression = [];
   // eslint-disable-next-line no-plusplus
   for (let i = 0; i < length; i++) {
     progression.push(start + i * step);
   }
-  progression[hiddenIndex] = '..';
   return progression;
 };
 
-const main = () => {
-  console.log('Welcome to the Brain Games!');
-  const name = readlineSync.question('May I have your name? ');
-  console.log(`Hello, ${name}!`);
-  console.log('What number is missing in the progression?');
+const getProgressionWithHiddenElement = (progression) => {
+  const hiddenIndex = Math.floor(Math.random() * progression.length);
+  const hiddenValue = progression[hiddenIndex];
+  // eslint-disable-next-line no-param-reassign
+  progression[hiddenIndex] = '..';
 
-  const rounds = 3;
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < rounds; i++) {
-    const progressionLength = randomInt(5, 10);
-    const start = randomInt(1, 20);
-    const step = randomInt(1, 5);
-    const hiddenIndex = randomInt(0, progressionLength);
+  return { progression, hiddenValue };
+};
 
-    const progression = generateProgression(progressionLength, start, step, hiddenIndex);
-    console.log(`Question: ${progression.join(' ')}`);
+const playGame = () => {
+  const name = game();
 
-    const correctAnswer = (start + hiddenIndex * step).toString();
-    const userAnswer = readlineSync.question('Your answer: ');
+  let correctAnswersCount = 0;
+  const maxCorrectAnswers = 5;
 
-    if (userAnswer === correctAnswer) {
+  while (correctAnswersCount < maxCorrectAnswers) {
+    const prog = generateProgression();
+    const { progression: hiddenProgression, hiddenValue } = getProgressionWithHiddenElement(prog);
+    console.log(`Question: ${hiddenProgression.join(' ')}`);
+    const answer = parseInt(readlineSync.question('Your answer: '), 10);
+
+    if (answer === hiddenValue) {
       console.log('Correct!');
+      // eslint-disable-next-line no-plusplus
+      correctAnswersCount++;
     } else {
-      console.log(`'${userAnswer}' is wrong answer ;(. Correct answer was '${correctAnswer}'.`);
+      console.log(
+        `'${answer}' is wrong answer ;(. Correct answer was '${hiddenValue}'.`,
+      );
       console.log(`Let's try again, ${name}!`);
       return;
     }
   }
-  console.log(`Congratulations, ${name}! You've completed the game!`);
+
+  console.log(`Congratulations, ${name}!`);
 };
 
-main();
+playGame();
