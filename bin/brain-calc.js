@@ -28,7 +28,6 @@ const calculateExpression = (num1, num2, operation) => {
     default:
       return null;
   }
-  return
 };
 
 const calcGame = () => {
@@ -48,14 +47,13 @@ const calcGame = () => {
     } else {
       console.log(`Incorrect! The correct answer was ${correctAnswer}.`);
       console.log(`Let's try again, ${name}!`);
-      return
+      return;
     }
   }
 
   console.log(
     `Congratulations, ${name}! You've answered 3 questions correctly.`,
   );
-  return
 };
 
 calcGame();

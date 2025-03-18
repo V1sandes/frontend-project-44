@@ -1,31 +1,39 @@
 #!/usr/bin/env node
 import readlineSync from 'readline-sync';
-import { randomInt } from 'crypto';
 import game from '../src/cli.js';
 
-const gcd = (a, b) => {
-  while (b) {
-    // eslint-disable-next-line no-param-reassign
-    [a, b] = [b, a % b];
+const isPrime = (number) => {
+  if (number <= 1) return false;
+  // eslint-disable-next-line no-plusplus
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) return false;
   }
-  return a;
+  return true;
 };
-const main = () => {
+
+function getRandomIntInclusive(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
+}
+const playGame = () => {
   const name = game();
-  console.log('Find the greatest common divisor of given numbers.');
+  console.log(
+    'Answer "yes" if the given number is prime. Otherwise answer "no".',
+  );
   // eslint-disable-next-line no-plusplus
   for (let i = 0; i < 3; i++) {
-    const num1 = randomInt(1, 100);
-    const num2 = randomInt(1, 100);
-    console.log(`Question: ${num1} ${num2}`);
-    const userAnswer = readlineSync.question('Your answer: ');
+    const number = getRandomIntInclusive(1, 100);
+    console.log(`Question: ${number}`);
+    const answer = readlineSync.question('Your answer: ').toLowerCase();
 
-    const correctAnswer = gcd(num1, num2).toString();
-    if (userAnswer === correctAnswer) {
+    const correctAnswer = isPrime(number) ? 'yes' : 'no';
+
+    if (answer === correctAnswer) {
       console.log('Correct!');
     } else {
       console.log(
-        `'${userAnswer}' is wrong answer ;(. Correct answer was '${correctAnswer}'.`,
+        `'${answer}' is wrong answer ;(. Correct answer was '${correctAnswer}'.`,
       );
       console.log(`Let's try again, ${name}!`);
       return;
@@ -34,4 +42,5 @@ const main = () => {
 
   console.log(`Congratulations, ${name}!`);
 };
-main();
+
+playGame();
