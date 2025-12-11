@@ -1,59 +1,48 @@
-#!/usr/bin/env node
-import readlineSync from 'readline-sync';
-import game from '../src/cli.js';
+import startEngine from './index.js';
 
-const name = game();
-
-console.log('What is the result of the expression?');
-
-const getRandomNumber = () => Math.floor(Math.random() * 50) + 1;
-
-const generateExpression = () => {
-  const getRandomInt1 = getRandomNumber();
-  const getRandomInt2 = getRandomNumber();
-  const operations = ['+', '-', '*'];
-  const operation = operations[Math.floor(Math.random() * operations.length)];
-
-  return [getRandomInt1, getRandomInt2, operation];
+const rule = 'What is the result of the expression?';
+const getRandomNum = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+const limit = {
+  min: 0,
+  max: 100,
+};
+const operator = {
+  plus: '+',
+  minus: '-',
+  prod: '*',
 };
 
-const calculateExpression = (num1, num2, operation) => {
-  switch (operation) {
-    case '+':
-      return num1 + num2;
-    case '-':
-      return num1 - num2;
-    case '*':
-      return num1 * num2;
+const calculateExpr = (firstNum, secondNum, oper) => {
+  switch (oper) {
+    case operator.plus:
+      return firstNum + secondNum;
+    case operator.minus:
+      return firstNum - secondNum;
+    case operator.prod:
+      return firstNum * secondNum;
     default:
-      return null;
+      return (`Unknown '${oper}'!`);
   }
 };
 
-const calcGame = () => {
-  let correctAnswersCount = 0;
+const getCalcGameOptions = () => {
+  const randA = getRandomNum(limit.min, limit.max);
+  const randB = getRandomNum(limit.min, limit.max);
+  const randOper = Object.values(operator)[getRandomNum(0, Object.keys(operator).length - 1)];
 
-  while (correctAnswersCount < 3) {
-    const [num1, num2, operation] = generateExpression();
-    const correctAnswer = calculateExpression(num1, num2, operation);
-    const expression = `${num1} ${operation} ${num2}`;
-    console.log(`Question: ${expression}`);
+  const expression = `${randA} ${randOper} ${randB}`;
 
-    const userAnswer = readlineSync.question('Your answer: ');
+  const value = calculateExpr(randA, randB, randOper);
 
-    if (parseInt(userAnswer, 10) === correctAnswer) {
-      console.log('Correct!');
-      correctAnswersCount += 1;
-    } else {
-      console.log(`Incorrect! The correct answer was ${correctAnswer}.`);
-      console.log(`Let's try again, ${name}!`);
-      return;
-    }
-  }
+  const answer = String(value);
 
-  console.log(
-    `Congratulations, ${name}! You've answered 3 questions correctly.`,
-  );
+  return {
+    answer,
+    expression,
+  };
 };
 
-calcGame();
+const startCalcGame = () => startEngine(rule, getCalcGameOptions);
+
+export default startCalcGame;
+//
