@@ -1,60 +1,35 @@
-#!/usr/bin/env node
-import readlineSync from 'readline-sync';
-import game from '../src/cli.js';
+import startEngine from './index.js';
+import generateRandomNumber from './helps.js';
 
-function getRandomIntInclusive(min, max) {
-  const minCeiled = Math.ceil(min);
-  const maxFloored = Math.floor(max);
-  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
-}
+const rule = 'What number is missing in the progression?';
+const minLength = 5;
+const maxLength = 10;
+const minRange = 1;
+const maxRange = 100;
+const minStep = 1;
+const maxStep = 10;
 
-const generateProgression = () => {
-  const length = getRandomIntInclusive(5, 10);
-  const start = getRandomIntInclusive(0, 9);
-  const step = getRandomIntInclusive(1, 5);
-  const progression = [];
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < length; i++) {
-    progression.push(start + i * step);
-  }
-  return progression;
-};
-
-const getProgressionWithHiddenElement = (progression) => {
-  const hiddenIndex = Math.floor(Math.random() * progression.length);
-  const hiddenValue = progression[hiddenIndex];
-  // eslint-disable-next-line no-param-reassign
+const getProgression = (start, step, length, hiddenIndex) => {
+  const progression = Array(length).fill(0).map((_, i) => start + (step * i));
   progression[hiddenIndex] = '..';
-
-  return { progression, hiddenValue };
+  return progression.join(' ');
 };
 
-const playGame = () => {
-  const name = game();
+const startRound = () => {
+  const startNumber = generateRandomNumber(minRange, maxRange);
+  const step = generateRandomNumber(minStep, maxStep);
+  const length = generateRandomNumber(minLength, maxLength);
+  const hiddenIndex = generateRandomNumber(2, length - 1);
 
-  let correctAnswersCount = 0;
-  const maxCorrectAnswers = 5;
+  const expression = getProgression(startNumber, step, length, hiddenIndex);
+  const answer = (startNumber + step * hiddenIndex).toString();
 
-  while (correctAnswersCount < maxCorrectAnswers) {
-    const prog = generateProgression();
-    const { progression: hiddenProgression, hiddenValue } = getProgressionWithHiddenElement(prog);
-    console.log(`Question: ${hiddenProgression.join(' ')}`);
-    const answer = parseInt(readlineSync.question('Your answer: '), 10);
-
-    if (answer === hiddenValue) {
-      console.log('Correct!');
-      // eslint-disable-next-line no-plusplus
-      correctAnswersCount++;
-    } else {
-      console.log(
-        `'${answer}' is wrong answer ;(. Correct answer was '${hiddenValue}'.`,
-      );
-      console.log(`Let's try again, ${name}!`);
-      return;
-    }
-  }
-
-  console.log(`Congratulations, ${name}!`);
+  return {
+    answer,
+    expression,
+  };
 };
 
-playGame();
+const runBrainProgressionGame = () => startEngine(rule, startRound);
+
+export default runBrainProgressionGame;
