@@ -14,9 +14,10 @@ const startEngine = (rule, getGameOptions) => {
     console.log(`Question: ${questionExpression}`)
     const userAnswer = readlineSync.question('Your answer: ')
     
-    if (correctAnswer === userAnswer) {
-      console.log('Correct!')
-    } else {
+if (correctAnswer === userAnswer) {
+  console.log('Correct!')
+}
+else {
       console.log(`'${userAnswer}' is wrong answer ;(. Correct answer was '${correctAnswer}'.`)
       console.log(`Let's try again, ${userName}!`)
       return
