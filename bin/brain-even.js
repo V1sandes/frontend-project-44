@@ -1,41 +1,28 @@
-#!/usr/bin/env node
-import readlineSync from 'readline-sync';
+import startEngine from './index.js';
 
-const game = () => {
-  const name = readlineSync.question('Welcome to the Even Game! What is your name? ');
-  console.log(`Hello, ${name}!`);
-  return name;
+const rule = 'Answer "yes" if the number is even, otherwise answer "no".';
+const getRandomNum = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+const limit = {
+  min: 0,
+  max: 100,
 };
 
-const isEvenGame = () => {
-  const name = game();
-  let score = 0;
-  console.log('Answer "yes" if the number is even, otherwise answer "no"');
+const isEven = (num) => num % 2 === 0;
 
-  while (score < 3) {
-    const getRandomInt = () => Math.floor(Math.random() * 100) + 1;
-    const isEven = (num) => num % 2 === 0;
-    const getRandomNum = getRandomInt();
+const getEvenGameOptions = () => {
+  const randNum = getRandomNum(limit.min, limit.max);
 
-    console.log(`Question: ${getRandomNum}`);
+  const expression = `${randNum}`;
 
-    const correctAnswer = isEven(getRandomNum) ? 'yes' : 'no';
-    const userAnswer = readlineSync.question('Your answer is: ');
+  const answer = isEven(randNum) ? 'yes' : 'no';
 
-    if (userAnswer.toLowerCase() === correctAnswer) {
-      score += 1;
-      console.log('Correct!');
-    } else {
-      console.log(
-        `${userAnswer} is a wrong answer ;(. The correct answer is ${correctAnswer}.`,
-      );
-      console.log(`Let's try again, ${name}!`);
-      return name;
-    }
-  }
-
-  console.log(`Congratulations, ${name}! Your score is: ${score}`);
-  return name;
+  return {
+    answer,
+    expression,
+  };
 };
 
-isEvenGame();
+const startEvenGame = () => startEngine(rule, getEvenGameOptions);
+
+export default startEvenGame;
+//
