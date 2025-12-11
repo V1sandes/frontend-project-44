@@ -1,4 +1,4 @@
-import readlineSync from 'readline-sync';
+import readlineSync from 'readline-sync'
 
 const greetingsMsg = 'Welcome to the Brain Games!';
 const timesCount = 3;
