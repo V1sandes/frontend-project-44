@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-import cli from '../index.js';
+import startHello from '../src/cli.js';
 
-cli();
+startHello();
