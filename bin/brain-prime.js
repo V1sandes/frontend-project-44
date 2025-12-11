@@ -1,46 +1,29 @@
-#!/usr/bin/env node
-import readlineSync from 'readline-sync';
-import game from '../src/cli.js';
+import startEngine from './index.js';
 
-const isPrime = (number) => {
-  if (number <= 1) return false;
-  // eslint-disable-next-line no-plusplus
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) return false;
-  }
-  return true;
+const rule = 'Answer "yes" if given number is prime. Otherwise answer "no".';
+const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const limit = {
+  min: 0,
+  max: 1000,
 };
 
-function getRandomIntInclusive(min, max) {
-  const minCeiled = Math.ceil(min);
-  const maxFloored = Math.floor(max);
-  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
-}
-const playGame = () => {
-  const name = game();
-  console.log(
-    'Answer "yes" if the given number is prime. Otherwise answer "no".',
-  );
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < 3; i++) {
-    const number = getRandomIntInclusive(1, 100);
-    console.log(`Question: ${number}`);
-    const answer = readlineSync.question('Your answer: ').toLowerCase();
-
-    const correctAnswer = isPrime(number) ? 'yes' : 'no';
-
-    if (answer === correctAnswer) {
-      console.log('Correct!');
-    } else {
-      console.log(
-        `'${answer}' is wrong answer ;(. Correct answer was '${correctAnswer}'.`,
-      );
-      console.log(`Let's try again, ${name}!`);
-      return;
-    }
+const isPrime = (num) => {
+  for (let i = 2, s = Math.sqrt(num); i <= s; i += 1) {
+    if (num % i === 0) return false;
   }
-
-  console.log(`Congratulations, ${name}!`);
+  return num > 1;
 };
 
-playGame();
+const getQuAndAn = () => {
+  const expression = getRandomNumber(limit.min, limit.max);
+  const answer = isPrime(expression) ? 'yes' : 'no';
+
+  return {
+    answer,
+    expression,
+  };
+};
+
+const runBrainPrimeGame = () => startEngine(rule, getQuAndAn);
+
+export default runBrainPrimeGame;
