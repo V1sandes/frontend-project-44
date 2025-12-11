@@ -1,40 +1,25 @@
-#!/usr/bin/env node
+import startEngine from './index.js';
+import generateRandomNumber from './helps.js';
 
-import readlineSync from 'readline-sync';
-import { randomInt } from 'crypto';
+const rule = 'Find the greatest common divisor of given numbers.';
+const min = 1;
+const max = 50;
 
-const gcd = (a, b) => {
-  while (b) {
-    // eslint-disable-next-line no-param-reassign
-    [a, b] = [b, a % b];
-  }
-  return a;
+const getNOD = (num1, num2) => (num2 === 0 ? num1 : getNOD(num2, num1 % num2));
+
+const startRound = () => {
+  const number1 = generateRandomNumber(min, max);
+  const number2 = generateRandomNumber(min, max);
+
+  const expression = `${number1} ${number2}`;
+  const answer = getNOD(number1, number2).toString();
+
+  return {
+    answer,
+    expression,
+  };
 };
 
-const main = () => {
-  console.log('Welcome to the Brain Games!');
-  const name = readlineSync.question('May I have your name? ');
-  console.log(`Hello, ${name}!`);
-  console.log('Find the greatest common divisor of given numbers.');
+const runBrainNodGame = () => startEngine(rule, startRound);
 
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < 3; i++) {
-    const num1 = randomInt(1, 100);
-    const num2 = randomInt(1, 100);
-    console.log(`Question: ${num1} ${num2}`);
-    const userAnswer = readlineSync.question('Your answer: ');
-
-    const correctAnswer = gcd(num1, num2).toString();
-    if (userAnswer === correctAnswer) {
-      console.log('Correct!');
-    } else {
-      console.log(`'${userAnswer}' is wrong answer ;(. Correct answer was '${correctAnswer}'.`);
-      console.log(`Let's try again, ${name}!`);
-      return;
-    }
-  }
-
-  console.log(`Congratulations, ${name}!`);
-};
-
-main();
+export default runBrainNodGame;
