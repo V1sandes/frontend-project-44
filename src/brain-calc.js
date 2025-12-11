@@ -15,11 +15,11 @@ const operator = {
 const calculateExpr = (firstNum, secondNum, oper) => {
   switch (oper) {
     case operator.plus:
-      return firstNum + secondNum;
+      return firstNum + secondNum
     case operator.minus:
-      return firstNum - secondNum;
+      return firstNum - secondNum
     case operator.prod:
-      return firstNum * secondNum;
+      return firstNum * secondNum
     default:
       return (`Unknown '${oper}'!`)
   }
